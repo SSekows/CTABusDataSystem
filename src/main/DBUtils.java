@@ -35,7 +35,7 @@ public class DBUtils {
 	}
 	
 	/**
-	 * Starts the connection to the sequel server. Localhost URL and username/password may vary
+	 * Starts the connection to the SQL server. Localhost URL and username/password may vary
 	 * among individual machines.
 	 * @throws SQLException
 	 */
@@ -213,8 +213,7 @@ public class DBUtils {
 	}
 	
 	/**
-	 * Builds the database containing the bus stop data. Should only need to be run once when 
-	 * connecting to a new localhost.
+	 * Builds the database containing the bus stop data.
 	 * @throws SQLException
 	 */
 	public void buildDatabase() throws SQLException {
@@ -240,9 +239,24 @@ public class DBUtils {
         preparedStmt.execute();
         
         this.executeUse("chicago_buses");
-        query = "load xml local infile '/Users/Steve/Desktop/rows.xml' "
+        query = "load xml local infile '/Users/Steve/workspace/CTABusDataSystem/rows.xml' "
         		+ "into table stopinfo(stop_id, on_street, cross_street, routes, boardings, "
-        		+ "alightings, month, daytype, location)";
+        		+ "alightings, month, daytype, latitude, longitude)";
+        preparedStmt = conn.prepareStatement(query);
+        preparedStmt.execute();
+	}
+	
+	/**
+	 * Deletes the table and the database.
+	 * @throws SQLException
+	 */
+	public void dropDatabase() throws SQLException {
+		this.executeUse("chicago_buses");
+		String query = "DROP TABLE stopinfo";
+		PreparedStatement preparedStmt = conn.prepareStatement(query);
+        preparedStmt.execute();
+        
+        query = "DROP DATABASE chicago_buses";
         preparedStmt = conn.prepareStatement(query);
         preparedStmt.execute();
 	}

@@ -4,6 +4,7 @@ package main;
  * Sources used in this project:
  * http://www.java2s.com/Code/Java/Chart/JFreeChartBarChartDemo.htm
  * http://www.jfree.org/jfreechart/ (open source charting program)
+ * https://data.cityofchicago.org/Transportation/CTA-Ridership-Avg-Weekday-Bus-Stop-Boardings-in-Oc/mq3i-nnqe
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -41,7 +42,7 @@ public class SystemRunner {
     	DBUtils d = new DBUtils();
         try {
             d.startConnection(); //start the connection
-            //d.buildDatabase(); //ONLY run this if you don't have the database built yet
+            d.buildDatabase(); //build the database
             
             JFrame frame = new JFrame("Please select a utility");
             String utilitySelection = (String) JOptionPane.showInputDialog(frame, 
@@ -75,6 +76,8 @@ public class SystemRunner {
                         "Hi, which utility will you be using today?", "Utility Selection", JOptionPane.QUESTION_MESSAGE, 
                         null, options, options[0]); //pick another utility or exit
             }
+            d.dropDatabase(); //drop the database
+            d.closeConnection(); //close the connection
             System.exit(0);
         }
         catch (Exception e) {
@@ -82,7 +85,8 @@ public class SystemRunner {
         }
         finally {
         	try {
-				d.closeConnection();
+        		d.dropDatabase(); //drop the database
+				d.closeConnection(); //close the connection
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
